@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Camera"
+        android:id="@+id/bottomNavCam"
+        android:icon="@drawable/camera_24"/>
+    <item android:title="Map"
+        android:id="@+id/bottomNavMap"
+        android:icon="@drawable/map_24"/>
+
+</menu>
