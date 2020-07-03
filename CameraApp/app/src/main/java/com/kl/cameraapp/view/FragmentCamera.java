@@ -103,7 +103,9 @@ public class FragmentCamera extends Fragment {
                             boolean focusable = true; // lets taps outside the popup also dismiss it
                             popupWindow = new PopupWindow(popupView, width, height, focusable);
                             popupWindow.showAtLocation(v, Gravity.CENTER_VERTICAL, 0, 0);
+                            JsonObject info = new JsonObject();
 
+//                            Log.d("img info", info);
                             ImageView imgv = popupView.findViewById(R.id.img_res);
                             Bitmap res = convertBase64ToBitmap(response.body().get("img").getAsString());
                             imgv.setImageBitmap(res);

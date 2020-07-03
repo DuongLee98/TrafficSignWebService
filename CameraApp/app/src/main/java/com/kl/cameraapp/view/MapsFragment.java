@@ -26,8 +26,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.JsonObject;
+import com.kl.cameraapp.MainActivity;
 import com.kl.cameraapp.R;
+import com.kl.cameraapp.controller.MyService;
 import com.kl.cameraapp.data.model.DirectionsParser;
+import com.kl.cameraapp.data.remote.RetrofitClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +46,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MapsFragment extends Fragment {
     SupportMapFragment mapFragment;
     GoogleMap ggMap;
@@ -49,12 +57,13 @@ public class MapsFragment extends Fragment {
     ArrayList<LatLng> route = new ArrayList<>();
     LatLng hanoi = new LatLng(21.028511, 105.804817);
     private static final int LOCATION_REQUEST = 500;
-
+    String jlat="";
+    String jlon="";
     public MapsFragment() {
 
     }
 
-    Button btnGetJam;
+    Button btnGetJam, btnUpJam;
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
@@ -238,7 +247,8 @@ public class MapsFragment extends Fragment {
             ArrayList points = new ArrayList(
 
             );
-
+            jlat = "";
+            jlon = "";
             PolylineOptions polylineOptions = null;
 
             for (List<HashMap<String, String>> path : lists) {
@@ -247,8 +257,9 @@ public class MapsFragment extends Fragment {
 
                 for (HashMap<String, String> point : path) {
                     double lat = Double.parseDouble(point.get("lat"));
+                    jlat += lat+", ";
                     double lon = Double.parseDouble(point.get("lon"));
-
+                    jlon += lon+", ";
                     points.add(new LatLng(lat, lon));
                 }
 
@@ -282,6 +293,36 @@ public class MapsFragment extends Fragment {
                 LatLng longbien = new LatLng(21.015, 105.58);
                 arrJam.add(longbien);
                 mapFragment.getMapAsync(callback);
+            }
+        });
+        btnUpJam = view.findViewById(R.id.btn_upjam);
+        btnUpJam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("user", MainActivity.user);
+                    json.put("lat","["+jlat+"]");
+                    json.put("lon", "["+jlon+"]");
+
+                    MyService myRetrofit = RetrofitClient.getInstance("http://10.0.2.2:5000")
+                            .create(MyService.class);
+
+                    Call<Boolean> call = myRetrofit.postJam(json);
+                    call.enqueue(new Callback<Boolean>() {
+                        @Override
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<Boolean> call, Throwable t) {
+
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
         return view;

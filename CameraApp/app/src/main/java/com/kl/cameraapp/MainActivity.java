@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView botNav;
     Fragment active;
     final FragmentManager fm;
+    public static String user;
     public MainActivity(){
         fragCamera = new FragmentCamera();
         fragMap = new MapsFragment();
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         botNav = findViewById(R.id.bot_nav);
-
+        user = getIntent().getStringExtra("user");
         fm.beginTransaction().add(R.id.frame_container, fragMap).hide(fragMap).commit();
         fm.beginTransaction().add(R.id.frame_container, fragCamera).commit();
         active = fragCamera;
