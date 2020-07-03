@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "235972971446",
+    "firebase_url": "https://login-service-2938d.firebaseio.com",
+    "project_id": "login-service-2938d",
+    "storage_bucket": "login-service-2938d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:235972971446:android:0b1aee723d3e951a3b8f17",
+        "android_client_info": {
+          "package_name": "com.kl.cameraapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "235972971446-02kuv81ilj338v505ig4avgvop5u6b30.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kl.cameraapp",
+            "certificate_hash": "61b2e3a511ee8768e6791e8d0e01b40365ba2246"
+          }
+        },
+        {
+          "client_id": "235972971446-mj5d1be0kjgn567avi1cr8um2o7oimab.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_Yby5ix2ZT_Qu2DKBs6QgmPyBSjRCXRQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "235972971446-mj5d1be0kjgn567avi1cr8um2o7oimab.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
