@@ -136,10 +136,11 @@ public class MapsFragment extends Fragment {
         String mode = "mode=driving";
         //Build the full param
         String param = str_org + "&" + str_dest + "&" + sensor + "&" + mode;
+        String key = "&key=AIzaSyA_KNxQsK5T_79iHdToCc78vmx90LSGtDc" ;
         //Output format
         String output = "json";
         //Create url to request
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param;
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param+key;
         Log.w("requesturl", url);
         return url;
     }
