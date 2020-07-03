@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "244784646411",
-    "firebase_url": "https://traffic-sign-detector-d401f.firebaseio.com",
-    "project_id": "traffic-sign-detector-d401f",
-    "storage_bucket": "traffic-sign-detector-d401f.appspot.com"
+    "project_number": "938383219706",
+    "firebase_url": "https://trafficsigndetectorapp.firebaseio.com",
+    "project_id": "trafficsigndetectorapp",
+    "storage_bucket": "trafficsigndetectorapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:244784646411:android:aa6f42288b52392a643a0e",
+        "mobilesdk_app_id": "1:938383219706:android:80b788bf21bf4804b0e243",
         "android_client_info": {
           "package_name": "com.kl.cameraapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "244784646411-d1f0kk6m69tdcu32t2f9hsfvrb4n3omi.apps.googleusercontent.com",
+          "client_id": "938383219706-rta4ue6frdh59pfqc0uoh8tooc8lvjjd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.kl.cameraapp",
@@ -23,20 +23,20 @@
           }
         },
         {
-          "client_id": "244784646411-ado1jl6ef1ds3cjfs1499oag4b0quh07.apps.googleusercontent.com",
+          "client_id": "938383219706-oic1uvat63tntgeigr8qf0mrmnfchl1b.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD2nK9ra58u20THPJh7chBy3SUQUmsBtYA"
+          "current_key": "AIzaSyDfQfsW6gESrhYyjSsoIWB2Gett-2W0DSk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "244784646411-ado1jl6ef1ds3cjfs1499oag4b0quh07.apps.googleusercontent.com",
+              "client_id": "938383219706-oic1uvat63tntgeigr8qf0mrmnfchl1b.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
