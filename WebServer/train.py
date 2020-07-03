@@ -23,6 +23,10 @@ from tensorflow.keras.layers import concatenate
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.optimizers import SGD
 
+physical_devices = tf.config.experimental.list_physical_devices('GPU')
+assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
 features = []
 labels = []
 root = "./data/"
@@ -44,6 +48,7 @@ for image in files:
 features = np.array(features)
 
 labels = np.array(labels)
+# print(len(labels))
 
 # plt.imshow(features[2100].astype("int"))
 # print(labels[2100])
@@ -51,7 +56,7 @@ labels = np.array(labels)
 features, labels = shuffle(features, labels)
 
 features = features / 255.0
-(trainX, testX, trainY, testY) = train_test_split(features, labels, test_size=0.25, random_state=42)
+(trainX, testX, trainY, testY) = train_test_split(features, labels, test_size=0.1, random_state=42)
 
 lb = LabelBinarizer()
 trainY = lb.fit_transform(trainY)
@@ -103,8 +108,8 @@ model.add(Activation("softmax"))
 # print(model.summary())
 aug = ImageDataGenerator(rotation_range=0.15, zoom_range=0.15, width_shift_range=0.12, height_shift_range=0.12,
                          horizontal_flip=True, vertical_flip=True, brightness_range=[0.5, 2.0])
-learning_rate = 0.01
-epochs = 40
+learning_rate = 0.001
+epochs = 100
 batch_size = 32
 
 opt = SGD(learning_rate=learning_rate, momentum=0.9)
