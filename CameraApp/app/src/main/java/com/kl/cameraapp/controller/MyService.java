@@ -24,6 +24,10 @@ public interface MyService {
     @Headers("Content-Type: application/json")
     Call<JsonObject> postImage(@Body JSONObject data);
 
+    @POST("/api/v1/trafficsign")
+    @Headers("Content-Type: application/json")
+    Call<Boolean> postJam(@Body JSONObject data);
+
     @GET("/")
     Call<String> getHome();
 }

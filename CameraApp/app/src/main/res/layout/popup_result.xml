@@ -11,6 +11,11 @@
         android:scaleType="fitCenter"
         android:layout_gravity="center_horizontal"
         android:id="@+id/img_res"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_desc"
+        android:textSize="20sp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
