@@ -51,7 +51,7 @@ public class MapsFragment extends Fragment {
 
                 //ggMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
             }
-
+            ggMap.moveCamera(CameraUpdateFactory.newLatLngZoom(arrLatlng.get(0), 15));
         }
     };
 
