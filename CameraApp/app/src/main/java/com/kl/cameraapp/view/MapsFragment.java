@@ -259,6 +259,7 @@ public class MapsFragment extends Fragment {
                     double lat = Double.parseDouble(point.get("lat"));
                     jlat += lat+", ";
                     double lon = Double.parseDouble(point.get("lon"));
+
                     jlon += lon+", ";
                     points.add(new LatLng(lat, lon));
                 }
@@ -290,8 +291,34 @@ public class MapsFragment extends Fragment {
         btnGetJam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LatLng longbien = new LatLng(21.015, 105.58);
-                arrJam.add(longbien);
+                //LatLng longbien = new LatLng(21.015, 105.58);
+                MyService myRetrofit = RetrofitClient.getInstance("http://10.0.2.2:5000")
+                        .create(MyService.class);
+
+                Call<JsonObject> call = myRetrofit.getAllLat();
+                call.enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        String lat = response.body().get("listLat").getAsString();
+                        String lon = response.body().get("listLon").getAsString();
+//                        String users = response.body().get("listUser").getAsString();
+                        lat = lat.replace('[', ' ').trim();
+                        lon = lon.replace(']', ' ').trim();
+                        String[] latPoint = lat.split("\\,\\s\\'");
+                        String[] lonPoint = lon.split(", ");
+
+                        for(int i = 0; i<latPoint.length; i++){
+                            arrJam.add(new LatLng(Double.parseDouble(latPoint[i]), Double.parseDouble(lonPoint[i])));
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                    }
+                });
+//                arrJam.add(longbien);
                 mapFragment.getMapAsync(callback);
             }
         });
@@ -301,6 +328,8 @@ public class MapsFragment extends Fragment {
             public void onClick(View v) {
                 JSONObject json = new JSONObject();
                 try {
+                    jlat = jlat.substring(0, jlat.length()-2);
+                    jlon = jlon.substring(0,jlon.length()-2);
                     json.put("user", MainActivity.user);
                     json.put("lat","["+jlat+"]");
                     json.put("lon", "["+jlon+"]");

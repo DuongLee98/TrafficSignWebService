@@ -166,10 +166,10 @@ public class LoginForm extends AppCompatActivity implements View.OnClickListener
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         FirebaseUser user = authResult.getUser();
-                        Toast.makeText(LoginForm.this, "Login Successful.... ", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(LoginForm.this, MainActivity.class);
+                        Toast.makeText(LoginForm.this, "Login Successful... ", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
                         intent.putExtra("user", user.getEmail());
-                        startActivity(new Intent(LoginForm.this, MainActivity.class));
+                        startActivity(intent);
                         finish();
                     }
                 })
