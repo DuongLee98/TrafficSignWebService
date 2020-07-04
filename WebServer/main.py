@@ -21,7 +21,7 @@ classNames = {
     9: 'Khong di 30km/h',
     10: 'Sign10'}
 
-saved_model = tf.keras.models.load_model("mynet.h5")
+saved_model = tf.keras.models.load_model("test.h5")
 
 def listDetection(img, link=None):
     if link is not None:
@@ -80,6 +80,11 @@ def api_trafficsign():
     image = np.frombuffer(base64_decoded, np.uint8)
     image_np = cv2.imdecode(image, cv2.IMREAD_COLOR)
     print(image_np.shape)
+    (w, h, d) = image_np.shape
+    cl = w / h
+    image_np = cv2.resize(image_np, dsize=(900, int(cl * 900)))
+    cv2.imwrite('./tmp/file.png', image_np)
+    # image_np = cv2.imread('./tmp/file.png', cv2.IMREAD_COLOR)
     limg, bounding = listDetection(image_np)
     print(limg.shape)
     print(bounding.shape)
@@ -89,17 +94,17 @@ def api_trafficsign():
     print(sign)
     print(pred)
     for i in range(len(sign)):
-        if pred[i] > 0.8:
+        if pred[i] > 0.5:
             b = bounding[i]
             image_np = cv2.rectangle(image_np, (b[1], b[0]), (b[1] + b[3], b[0] + b[2]), (36, 255, 12), 1)
             cv2.putText(image_np, classNames[sign[i]], (b[1], b[0]), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (36, 255, 12), 2)
 
-    image_np = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
+    # image_np = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
     retval, buffer = cv2.imencode('.jpg', image_np)
     s = base64.b64encode(buffer).decode()
     # print(s)
     # print(jsonify({'img': s, 'info': [{'sign': "TurnLeft", 'img': 'icon image', 'Des': 'ok babe'}]}).get_data(as_text=True))
-    return jsonify({'img': s, 'info': [{'sign': "TurnLeft", 'img': 'icon image', 'Des': 'ok babe'}]})
+    return jsonify({'img': s, 'info': [{'sign': "TurnLeft", 'img': 'icon image', 'Des': 'ok'}]})
 
 @app.route('/api/v1/postdiadiem', methods=['POST'])
 def api_postdiadiem():

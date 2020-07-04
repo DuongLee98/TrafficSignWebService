@@ -16,16 +16,25 @@ classNames = {
     9: 'Khong di 30km/h',
     10: 'Sign10'}
 
+#
+# saved_model = tf.keras.models.load_model("test.h5")
+#
+# img = []
+# image = cv2.imread("00364_00000.ppm")
+# b, g, r = cv2.split(image)  # get b, g, r
+# image = cv2.merge([r, g, b])
+# image = cv2.resize(image, dsize=(32, 32))
+# img.append(image)
+# img = np.asarray(img, dtype=float)
+# res = saved_model.predict(img)
+# sign = np.argmax(res)
+# print(classNames[int(sign)])
 
-saved_model = tf.keras.models.load_model("test.h5")
+img = cv2.imread('./data/10/00000_00004.ppm', cv2.IMREAD_COLOR)
 
-img = []
-image = cv2.imread("00364_00000.ppm")
-b, g, r = cv2.split(image)  # get b, g, r
-image = cv2.merge([r, g, b])
-image = cv2.resize(image, dsize=(32, 32))
-img.append(image)
-img = np.asarray(img, dtype=float)
-res = saved_model.predict(img)
-sign = np.argmax(res)
-print(classNames[int(sign)])
+# b, g, r = cv2.split(img)  # get b, g, r
+# img = cv2.merge([r, g, b])
+img = cv2.resize(img, dsize=(32, 32))
+cv2.imwrite('./tmp/0_9.jpg', img)
+# cv2.imshow('f', img)
+# cv2.waitKey(0)
