@@ -24,10 +24,12 @@ public interface MyService {
     @Headers("Content-Type: application/json")
     Call<JsonObject> postImage(@Body JSONObject data);
 
-    @POST("/api/v1/trafficsign")
+    @POST("/api/v1/postdiadiem")
     @Headers("Content-Type: application/json")
     Call<Boolean> postJam(@Body JSONObject data);
 
+    @GET("/api/v1/getall")
+    Call<JsonObject> getAllLat();
     @GET("/")
     Call<String> getHome();
 }

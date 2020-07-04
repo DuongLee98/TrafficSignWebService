@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kl.cameraapp.view.FragmentCamera;
@@ -18,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView botNav;
     Fragment active;
     final FragmentManager fm;
-    public static String user;
+    public static String user ="";
     public MainActivity(){
         fragCamera = new FragmentCamera();
         fragMap = new MapsFragment();
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         botNav = findViewById(R.id.bot_nav);
         user = getIntent().getStringExtra("user");
+        Toast.makeText(this, "Hello "+user, Toast.LENGTH_LONG).show();
         fm.beginTransaction().add(R.id.frame_container, fragMap).hide(fragMap).commit();
         fm.beginTransaction().add(R.id.frame_container, fragCamera).commit();
         active = fragCamera;
