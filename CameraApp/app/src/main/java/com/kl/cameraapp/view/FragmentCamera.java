@@ -54,7 +54,7 @@ public class FragmentCamera extends Fragment {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 1;
     PopupWindow popupWindow;
-    static String baseURL = "http://10.0.2.2:5000";
+    static String baseURL = "http://192.168.0.107:5000";
     public FragmentCamera(){
 
     }
@@ -135,7 +135,14 @@ public class FragmentCamera extends Fragment {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                galleryAddPic();
+                File imgFile = new  File("/DCIM/CAMERA/rsz2.jpg");
+
+                if(imgFile.exists()){
+
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    imageView.setImageBitmap(myBitmap);
+                    currentPhotoPath = "/DCIM/CAMERA/rsz2.jpg";
+                }
             }
         });
         buttonCapture.setOnClickListener(new View.OnClickListener() {

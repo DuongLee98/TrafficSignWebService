@@ -30,6 +30,7 @@ public interface MyService {
 
     @GET("/api/v1/getall")
     Call<JsonObject> getAllLat();
+
     @GET("/")
     Call<String> getHome();
 }

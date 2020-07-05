@@ -5,9 +5,9 @@ import numpy as np
 import cv2
 import tensorflow as tf
 
-physical_devices = tf.config.experimental.list_physical_devices('GPU')
-assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
+# physical_devices = tf.config.experimental.list_physical_devices('GPU')
+# assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
+# tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 classNames = {
     1: 'Dung lai',
@@ -22,6 +22,7 @@ classNames = {
     10: 'Sign10'}
 
 saved_model = tf.keras.models.load_model("mynet.h5")
+
 
 def listDetection(img, link=None):
     if link is not None:
@@ -56,19 +57,22 @@ def listDetection(img, link=None):
 
     return np.array(arr), np.array(bounding)
 
+
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
 listUser = []
-listLat = []
-listLon = []
+listLat = ""
+listLon = ""
 print(listUser)
 print(listLat)
 print(listLon)
 
+
 @app.route("/")
 def home():
     return "meo meo"
+
 
 @app.route('/api/v1/trafficsign', methods=['POST'])
 def api_trafficsign():
@@ -101,6 +105,7 @@ def api_trafficsign():
     # print(jsonify({'img': s, 'info': [{'sign': "TurnLeft", 'img': 'icon image', 'Des': 'ok babe'}]}).get_data(as_text=True))
     return jsonify({'img': s, 'info': [{'sign': "TurnLeft", 'img': 'icon image', 'Des': 'ok babe'}]})
 
+
 @app.route('/api/v1/postdiadiem', methods=['POST'])
 def api_postdiadiem():
     content = request.get_json()
@@ -111,9 +116,12 @@ def api_postdiadiem():
     print(lat)
     print(lon)
     listUser.append(user)
-    listLat.append(lat)
-    listLon.append(lon)
+    global listLat, listLon
+    listLat += lat+','
+    listLon += lon+','
+
     return jsonify({'result': True})
+
 
 @app.route('/api/v1/getall', methods=['GET'])
 def api_getdiadiem():
@@ -122,6 +130,8 @@ def api_getdiadiem():
     print(listUser)
     print(listLat)
     print(listLon)
-    return jsonify({'listUser': listUser, 'listLat': listLat, 'listLon':listLon})
+
+    return jsonify({'listUser': listUser, 'listLat': str(listLat), 'listLon': str(listLon)})
+
 
 app.run(host='0.0.0.0', port=5000)

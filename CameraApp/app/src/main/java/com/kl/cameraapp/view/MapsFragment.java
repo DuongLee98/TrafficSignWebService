@@ -59,6 +59,7 @@ public class MapsFragment extends Fragment {
     private static final int LOCATION_REQUEST = 500;
     String jlat="";
     String jlon="";
+    static  String baseUrl = "http://192.168.0.107:5000";
     public MapsFragment() {
 
     }
@@ -257,10 +258,10 @@ public class MapsFragment extends Fragment {
 
                 for (HashMap<String, String> point : path) {
                     double lat = Double.parseDouble(point.get("lat"));
-                    jlat += lat+", ";
+                    jlat += lat+",";
                     double lon = Double.parseDouble(point.get("lon"));
 
-                    jlon += lon+", ";
+                    jlon += lon+",";
                     points.add(new LatLng(lat, lon));
                 }
 
@@ -292,7 +293,7 @@ public class MapsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //LatLng longbien = new LatLng(21.015, 105.58);
-                MyService myRetrofit = RetrofitClient.getInstance("http://10.0.2.2:5000")
+                MyService myRetrofit = RetrofitClient.getInstance(baseUrl)
                         .create(MyService.class);
 
                 Call<JsonObject> call = myRetrofit.getAllLat();
@@ -302,10 +303,12 @@ public class MapsFragment extends Fragment {
                         String lat = response.body().get("listLat").getAsString();
                         String lon = response.body().get("listLon").getAsString();
 //                        String users = response.body().get("listUser").getAsString();
-                        lat = lat.replace('[', ' ').trim();
-                        lon = lon.replace(']', ' ').trim();
-                        String[] latPoint = lat.split("\\,\\s\\'");
-                        String[] lonPoint = lon.split(", ");
+                        lat = lat.trim();
+                        lon = lon.trim();
+                        Log.d("lat:", lat);
+                        Log.d("lon:", lon);
+                        String[] latPoint = lat.split("\\,");
+                        String[] lonPoint = lon.split("\\,");
 
                         for(int i = 0; i<latPoint.length; i++){
                             arrJam.add(new LatLng(Double.parseDouble(latPoint[i]), Double.parseDouble(lonPoint[i])));
@@ -315,7 +318,7 @@ public class MapsFragment extends Fragment {
 
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                        Log.d("Fail zz", "");
                     }
                 });
 //                arrJam.add(longbien);
@@ -331,10 +334,10 @@ public class MapsFragment extends Fragment {
                     jlat = jlat.substring(0, jlat.length()-2);
                     jlon = jlon.substring(0,jlon.length()-2);
                     json.put("user", MainActivity.user);
-                    json.put("lat","["+jlat+"]");
-                    json.put("lon", "["+jlon+"]");
+                    json.put("lat",jlat);
+                    json.put("lon", jlon);
 
-                    MyService myRetrofit = RetrofitClient.getInstance("http://10.0.2.2:5000")
+                    MyService myRetrofit = RetrofitClient.getInstance(baseUrl)
                             .create(MyService.class);
 
                     Call<Boolean> call = myRetrofit.postJam(json);
@@ -346,7 +349,7 @@ public class MapsFragment extends Fragment {
 
                         @Override
                         public void onFailure(Call<Boolean> call, Throwable t) {
-
+                            Log.d("Fail zz", "");
                         }
                     });
                 } catch (JSONException e) {
