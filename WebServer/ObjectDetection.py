@@ -19,10 +19,10 @@ classNames = {
     9: 'Khong di 30km/h',
     10: 'Sign10'}
 
-self.saved_model = tf.keras.models.load_model("mynet.h5")
+saved_model = tf.keras.models.load_model("mynet.h5")
 
 
-def listDetection(self, img, link=None):
+def listDetection(img, link=None):
     if link is not None:
         imgr = cv2.imread(link, cv2.IMREAD_COLOR)
     else:
@@ -56,3 +56,27 @@ def listDetection(self, img, link=None):
                     bounding.append((x, y, w, h))
 
     return np.array(arr), np.array(bounding)
+
+img = cv2.imread('./tmp/file.png', cv2.IMREAD_COLOR)
+
+(w, h, d) = img.shape
+cl = w/h
+img = cv2.resize(img, dsize=(900, int(cl*900)))
+
+limg, bounding = listDetection(img)
+
+print(limg.shape)
+print(bounding.shape)
+res = saved_model.predict(limg)
+sign = np.argmax(res, axis=1)
+pred = np.amax(res, axis=1)
+print(sign)
+print(pred)
+for i in range(len(sign)):
+    # if pred[i] > 0.8:
+    b = bounding[i]
+    img = cv2.rectangle(img, (b[1], b[0]), (b[1] + b[3], b[0] + b[2]), (36, 255, 12), 1)
+    cv2.putText(img, classNames[sign[i]], (b[1], b[0]), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (36, 255, 12), 2)
+
+cv2.imshow('f', img)
+cv2.waitKey(0)
