@@ -20,11 +20,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.JsonObject;
 import com.kl.cameraapp.MainActivity;
@@ -45,6 +47,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,13 +57,18 @@ import retrofit2.Response;
 public class MapsFragment extends Fragment {
     SupportMapFragment mapFragment;
     GoogleMap ggMap;
-    ArrayList<LatLng> arrJam = new ArrayList<>();
+    ArrayList arrJam = new ArrayList<>();
     ArrayList<LatLng> route = new ArrayList<>();
+    ArrayList listRoute = new ArrayList();
     LatLng hanoi = new LatLng(21.028511, 105.804817);
     private static final int LOCATION_REQUEST = 500;
-    String jlat="";
-    String jlon="";
-    static  String baseUrl = "http://192.168.0.107:5000";
+    String jlat = "";
+    String jlon = "";
+    PolylineOptions plo = new PolylineOptions();
+    String lat = "";
+    String lon = "";
+    static String baseUrl = "http://192.168.43.194:5000";
+
     public MapsFragment() {
 
     }
@@ -89,14 +98,14 @@ public class MapsFragment extends Fragment {
             }
             ggMap = googleMap;
             ggMap.setMyLocationEnabled(true);
-            for (int i = 0; i < arrJam.size(); i++) {
-                ggMap.addMarker(new MarkerOptions().position(arrJam.get(i)).title("Marker in HN"));
-                //ggMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hanoi, 15));
-//                ggMap.animateCamera(CameraUpdateFactory.zoomIn());
-
-                //ggMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
-            }
-
+//            for (int i = 0; i < arrJam.size(); i++) {
+//                ggMap.addMarker(new MarkerOptions().position(arrJam.get(i)).title("Marker in HN"));
+//                //ggMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hanoi, 15));
+////                ggMap.animateCamera(CameraUpdateFactory.zoomIn());
+//
+//                //ggMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+//
+//            }
 
             ggMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                 @Override
@@ -146,11 +155,11 @@ public class MapsFragment extends Fragment {
         String mode = "mode=driving";
         //Build the full param
         String param = str_org + "&" + str_dest + "&" + sensor + "&" + mode;
-        String key = "&key=AIzaSyA_KNxQsK5T_79iHdToCc78vmx90LSGtDc" ;
+        String key = "&key=AIzaSyAkLMHYfm2RZbGFdZEe8mkM_cIK9x0FY38";
         //Output format
         String output = "json";
         //Create url to request
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param+key;
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + key;
         Log.w("requesturl", url);
         return url;
     }
@@ -187,6 +196,7 @@ public class MapsFragment extends Fragment {
             }
             httpURLConnection.disconnect();
         }
+        Log.d("response string", responseString);
         return responseString;
     }
 
@@ -207,9 +217,10 @@ public class MapsFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... strings) {
-            String responseString = "";
+            String responseString = "jel";
             try {
                 responseString = requestDirection(strings[0]);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -229,7 +240,7 @@ public class MapsFragment extends Fragment {
 
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... strings) {
-            JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObject;
             List<List<HashMap<String, String>>> routes = null;
             try {
                 jsonObject = new JSONObject(strings[0]);
@@ -245,9 +256,7 @@ public class MapsFragment extends Fragment {
         protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
             //Get list route and display it into the map
 
-            ArrayList points = new ArrayList(
-
-            );
+            ArrayList points;
             jlat = "";
             jlon = "";
             PolylineOptions polylineOptions = null;
@@ -258,10 +267,10 @@ public class MapsFragment extends Fragment {
 
                 for (HashMap<String, String> point : path) {
                     double lat = Double.parseDouble(point.get("lat"));
-                    jlat += lat+",";
+                    jlat += lat + ";";
                     double lon = Double.parseDouble(point.get("lon"));
 
-                    jlon += lon+",";
+                    jlon += lon + ";";
                     points.add(new LatLng(lat, lon));
                 }
 
@@ -293,6 +302,8 @@ public class MapsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //LatLng longbien = new LatLng(21.015, 105.58);
+//                plo = new PolylineOptions();
+                listRoute.clear();
                 MyService myRetrofit = RetrofitClient.getInstance(baseUrl)
                         .create(MyService.class);
 
@@ -300,18 +311,54 @@ public class MapsFragment extends Fragment {
                 call.enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        String lat = response.body().get("listLat").getAsString();
-                        String lon = response.body().get("listLon").getAsString();
-//                        String users = response.body().get("listUser").getAsString();
+                        lat = response.body().get("listLat").getAsString();
+                        lon = response.body().get("listLon").getAsString();
                         lat = lat.trim();
                         lon = lon.trim();
-                        Log.d("lat:", lat);
-                        Log.d("lon:", lon);
-                        String[] latPoint = lat.split("\\,");
-                        String[] lonPoint = lon.split("\\,");
 
-                        for(int i = 0; i<latPoint.length; i++){
-                            arrJam.add(new LatLng(Double.parseDouble(latPoint[i]), Double.parseDouble(lonPoint[i])));
+                        if (!lat.isEmpty() && !lon.isEmpty()) {
+                            String[] routeLat = lat.split("\\,");
+                            String[] routeLon = lon.split("\\,");
+//                            Log.d("lalt routes", latPoint.toString());
+                            ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+                            try {
+                                for (int i = 0; i < routeLat.length; i++) {
+//                                //arrJam.add(new LatLng(Double.parseDouble(latPoint[i]), Double.parseDouble(lonPoint[i])));
+
+//                                arrJam.clear();
+//
+//                                for (int j = 0; j < lats.length; j++) {
+//                                    if (lats[j].contains("[")) {
+//                                        lats[j] = lats[j].substring(1);
+//                                    }
+//                                    if (lons[j].contains("[")) {
+//                                        lons[j] = lons[j].substring(1);
+//                                    }
+//                                    if (lats[j].contains("]")) {
+//                                        lats[j] = lats[j].substring(0, lats[j].length() - 2);
+//                                    }
+//                                    if (lons[j].contains("]")) {
+//                                        lons[j] = lons[j].substring(0, lons[j].length() - 2);
+//                                    }
+////                                    arrJam.add(new LatLng(Double.parseDouble(lats[j]), Double.parseDouble(lons[j])));
+//
+//                                    arrJam.add(new LatLng(Double.parseDouble(lats[j]), Double.parseDouble(lons[j])));
+//                                }
+//                                plo.addAll(arrJam);
+//                                plo.width(15);
+//                                plo.color(Color.RED);
+//                                plo.geodesic(true);
+//                                ggMap.addPolyline(plo);
+//                                Log.d("point", plo.getPoints().size() + "");
+//
+////                                plo.getPoints().clear();
+                                    executor.execute(new DrawRouteThread(routeLat[i], routeLon[i], i+1));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            executor.shutdown();
+
                         }
 
                     }
@@ -322,20 +369,21 @@ public class MapsFragment extends Fragment {
                     }
                 });
 //                arrJam.add(longbien);
-                mapFragment.getMapAsync(callback);
+//                mapFragment.getMapAsync(callback);
             }
         });
         btnUpJam = view.findViewById(R.id.btn_upjam);
         btnUpJam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ggMap.clear();
                 JSONObject json = new JSONObject();
                 try {
-                    jlat = jlat.substring(0, jlat.length()-2);
-                    jlon = jlon.substring(0,jlon.length()-2);
+                    jlat = jlat.substring(0, jlat.length() - 1);
+                    jlon = jlon.substring(0, jlon.length() - 1);
                     json.put("user", MainActivity.user);
-                    json.put("lat",jlat);
-                    json.put("lon", jlon);
+                    json.put("lat", "[" + jlat + "]");
+                    json.put("lon", "[" + jlon + "]");
 
                     MyService myRetrofit = RetrofitClient.getInstance(baseUrl)
                             .create(MyService.class);
@@ -344,6 +392,7 @@ public class MapsFragment extends Fragment {
                     call.enqueue(new Callback<Boolean>() {
                         @Override
                         public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            Log.d("post jam ok", "ok");
 
                         }
 
@@ -365,9 +414,70 @@ public class MapsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
-            arrJam.add(hanoi);
+//            arrJam.add(hanoi);
             mapFragment.getMapAsync(callback);
         }
     }
 
+    class DrawRouteThread extends Thread {
+        String lats, lons;
+        int threadNo;
+        ArrayList<LatLng> arrStuckRoad = new ArrayList();
+
+        PolylineOptions po = new PolylineOptions();
+
+
+        public DrawRouteThread(String lat, String lon, int no) {
+            this.lats = lat;
+            this.lons = lon;
+            this.threadNo = no;
+
+        }
+
+        @Override
+        public void run() {
+
+            try {
+                mapFragment.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String[] latPoints = lats.split("\\;");
+                        String[] lonPoints = lons.split("\\;");
+                        for (int i = 0; i < latPoints.length; i++) {
+                            if (latPoints[i].contains("[")) {
+                                latPoints[i] = latPoints[i].substring(1);
+                            }
+                            if (lonPoints[i].contains("[")) {
+                                lonPoints[i] = lonPoints[i].substring(1);
+                            }
+                            if (latPoints[i].contains("]")) {
+                                latPoints[i] = latPoints[i].substring(0, latPoints[i].length() - 2);
+                            }
+                            if (lonPoints[i].contains("]")) {
+                                lonPoints[i] = lonPoints[i].substring(0, lonPoints[i].length() - 2);
+                            }
+                            arrStuckRoad.add(new LatLng(Double.parseDouble(latPoints[i]),
+                                    Double.parseDouble(lonPoints[i])));
+                        }
+                        Log.d("road 0, " + "thread " + threadNo, arrStuckRoad.get(arrStuckRoad.size()-1).latitude
+                                + " " + arrStuckRoad.get(arrStuckRoad.size()-1).longitude);
+                        po.addAll(arrStuckRoad);
+                        po.width(15);
+                        po.color(Color.RED);
+                        po.geodesic(true);
+                        if (po != null){
+                            Polyline p =ggMap.addPolyline(po);
+                            if(p != null){
+                                Log.d("draw", "ok");
+                            }
+                        }
+
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

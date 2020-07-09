@@ -19,7 +19,7 @@ classNames = {
     9: 'Khong di 30km/h',
     10: 'Sign10'}
 
-saved_model = tf.keras.models.load_model("mynet.h5")
+saved_model = tf.keras.models.load_model("test.h5")
 
 
 def listDetection(img, link=None):
@@ -57,7 +57,7 @@ def listDetection(img, link=None):
 
     return np.array(arr), np.array(bounding)
 
-img = cv2.imread('./tmp/file.png', cv2.IMREAD_COLOR)
+img = cv2.imread('./image_test/unnamed.jpg', cv2.IMREAD_COLOR)
 
 (w, h, d) = img.shape
 cl = w/h

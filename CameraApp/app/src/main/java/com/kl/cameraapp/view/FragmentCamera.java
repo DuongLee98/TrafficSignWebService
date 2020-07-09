@@ -54,7 +54,7 @@ public class FragmentCamera extends Fragment {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 1;
     PopupWindow popupWindow;
-    static String baseURL = "http://192.168.0.107:5000";
+    static String baseURL = "http://192.168.43.194:5000";
     public FragmentCamera(){
 
     }
